@@ -57,11 +57,9 @@ flags.mark_flag_as_required('output_model')
 
 def load_model(input_model_path, input_json_path=None, input_yaml_path=None):
     if not Path(input_model_path).exists():
-        raise FileNotFoundError(
-            'Model file `{}` does not exist.'.format(input_model_path))
+        raise FileNotFoundError(f'Model file `{input_model_path}` does not exist.')
     try:
-        model = keras.models.load_model(input_model_path)
-        return model
+        return keras.models.load_model(input_model_path)
     except FileNotFoundError as err:
         logging.error('Input mode file (%s) does not exist.', FLAGS.input_model)
         raise err
@@ -69,8 +67,9 @@ def load_model(input_model_path, input_json_path=None, input_yaml_path=None):
         if input_json_path:
             if not Path(input_json_path).exists():
                 raise FileNotFoundError(
-                    'Model description json file `{}` does not exist.'.format(
-                        input_json_path))
+                    f'Model description json file `{input_json_path}` does not exist.'
+                )
+
             try:
                 model = model_from_json(open(str(input_json_path)).read())
                 model.load_weights(input_model_path)
@@ -81,8 +80,9 @@ def load_model(input_model_path, input_json_path=None, input_yaml_path=None):
         elif input_yaml_path:
             if not Path(input_yaml_path).exists():
                 raise FileNotFoundError(
-                    'Model description yaml file `{}` does not exist.'.format(
-                        input_yaml_path))
+                    f'Model description yaml file `{input_yaml_path}` does not exist.'
+                )
+
             try:
                 model = model_from_yaml(open(str(input_yaml_path)).read())
                 model.load_weights(input_model_path)
@@ -115,7 +115,7 @@ def main(args):
     output_fld = Path(output_model).parent
     output_model_name = Path(output_model).name
     output_model_stem = Path(output_model).stem
-    output_model_pbtxt_name = output_model_stem + '.pbtxt'
+    output_model_pbtxt_name = f'{output_model_stem}.pbtxt'
 
     # Create output directory if it does not exist
     Path(output_model).parent.mkdir(parents=True, exist_ok=True)
@@ -136,8 +136,7 @@ def main(args):
 
         # Create dummy tf nodes to rename output
         for i in range(num_output):
-            converted_output_node_names[i] = '{}{}'.format(
-                FLAGS.output_nodes_prefix, i)
+            converted_output_node_names[i] = f'{FLAGS.output_nodes_prefix}{i}'
             pred[i] = tf.identity(model.outputs[i],
                                   name=converted_output_node_names[i])
     else:

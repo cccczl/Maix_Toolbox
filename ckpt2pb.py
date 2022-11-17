@@ -14,7 +14,7 @@ with tf.Session() as sess:
 	sess=sess,
 	input_graph_def=sess.graph_def,# 等于:sess.graph_def
 	output_node_names=output_node_names.split(","))# 如果有多个输出节点，以逗号隔开
-	with tf.gfile.GFile(ckpt_meta_path+'.pb', "wb") as f: #保存模型
+	with tf.gfile.GFile(f'{ckpt_meta_path}.pb', "wb") as f: #保存模型
 		f.write(output_graph_def.SerializeToString()) #序列化输出
 	print("%d ops in the final graph." % len(output_graph_def.node))
 
